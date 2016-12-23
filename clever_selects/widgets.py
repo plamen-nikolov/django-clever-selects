@@ -40,7 +40,6 @@ class ChainedSelectMixin(object):
                     parent_field.on('change', function() {
                         $(this).loadAllChainedChoices();
                     });
-                    parent_field.loadAllChainedChoices();
                 });
             })(jQuery || django.jQuery);
         </script>

@@ -12,14 +12,13 @@ improved existing instance data initialization and new ``ChainedModelChoiceField
 is able pass ``request.user`` variable into AJAX view if user is logged in. It is very useful if you need to filter result queryset by
 user permissions for example.
 
-Tested on Django 1.4.5.
+Tested on Django 1.9.
 
 
 Requirements
 ------------
 - Django
-
-- jQuery
+- jQuery (must be added in <head>)
 
 
 Installation
@@ -119,6 +118,10 @@ Or you can use ``ChainedSelectChoicesView`` class helper::
                 vals_list.append(x*int(self.parent_value))
             return tuple(zip(vals_list, vals_list))
 
+
+
+Where ``parent_value`` (``self.parent_value``) can be either a ``str`` for parent fields with a single selection,
+or a ``list`` for multiple-selection parent fields.
 
 Don't forget to update your urls.py::
 

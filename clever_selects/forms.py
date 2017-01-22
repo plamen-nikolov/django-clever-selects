@@ -84,7 +84,7 @@ class ChainedChoicesMixin(object):
 
                 field.choices = []
                 # only add null choice on optional single selects
-                if not isinstance(field, MultipleChoiceField) and not field.required:
+                if not isinstance(field, MultipleChoiceField) and field.required:
                     field.choices += [('', field.empty_label)]
 
                 # check that parent_value is valid

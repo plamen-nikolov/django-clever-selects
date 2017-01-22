@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import resolve
 from django.core.validators import EMPTY_VALUES
 from django.db import models
+from django.forms.fields import MultipleChoiceField
 from django.http.request import HttpRequest
 from django.utils.encoding import smart_str, force_text
 
@@ -81,7 +82,10 @@ class ChainedChoicesMixin(object):
                     if field_value is None:
                         field_value = getattr(self, '%s' % field_name, None)
 
-                field.choices = [('', field.empty_label)]
+                field.choices = []
+                # only add null choice on optional single selects
+                if not isinstance(field, MultipleChoiceField) and not field.required:
+                    field.choices += [('', field.empty_label)]
 
                 # check that parent_value is valid
                 if parent_value:

@@ -35,9 +35,10 @@ class ChainedSelectChoicesView(View):
         self.parent_field = request.GET.get("parent_field")
         # Get the parent field value. It works for single and multiple selects.
         self.parent_value = request.GET.get("parent_value") or request.GET.getlist("parent_value[]")
-        # If the 'parent_value' attribute is empty, immediately return Nothing
+        # If the 'parent_value' attribute is empty, do not return Nothing:
+        # the client might want to artificially augment the 'parent_value'
         if self.parent_value in EMPTY_VALUES:
-            return self.empty_response()
+            pass
         return super(ChainedSelectChoicesView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

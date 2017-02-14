@@ -13,13 +13,14 @@
                 },
                 function(j) {
                     var options = '';
-                    console.log(child);
+                    var selected_value = child.val();
                     if (!child[0].hasAttribute('multiple'))
                         options += '<option value="">' + empty_label + '</option>';
                     for (var i = 0; i < j.length; i++) {
                         options += '<option value="' + j[i][0] + '">' + j[i][1] + '</option>';
                     }
                     valuefield.html(options);
+                    valuefield.val(selected_value);  // keep selection on choices refresh
                     valuefield.trigger('change');
                     valuefield.trigger("liszt:updated"); // support for chosen versions < 1.0.0
                     valuefield.trigger("chosen:updated"); // support for chosen versions >= 1.0.0

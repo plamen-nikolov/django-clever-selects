@@ -4,6 +4,7 @@ import json
 
 from django import forms
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import resolve
 from django.core.validators import EMPTY_VALUES
@@ -88,7 +89,7 @@ class ChainedChoicesMixin(object):
                     field.choices += [('', field.empty_label)]
 
                 # check that parent_value is valid
-                if parent_value:
+                if parent_value or True:
                     parent_value = getattr(parent_value, 'pk', parent_value)
 
                     url = force_text(field.ajax_url)
@@ -106,6 +107,8 @@ class ChainedChoicesMixin(object):
                     fake_request = HttpRequest()
                     fake_request.META["SERVER_NAME"] = "localhost"
                     fake_request.META["SERVER_PORT"] = '80'
+                    SessionMiddleware().process_request(fake_request)
+                    fake_request.session['extradata'] = getattr(self, 'extradata', None)
 
                     # Add parameters and user if supplied
                     fake_request.method = "GET"
@@ -152,8 +155,6 @@ class ChainedChoicesMixin(object):
         return result
 
     def get_children_field_names(self, parent_name):
-        if parent_name in EMPTY_VALUES:
-            return []
         result = []
         for field_name in self.fields:
             field = self.fields[field_name]

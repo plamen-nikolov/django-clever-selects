@@ -4,14 +4,14 @@ from setuptools import setup
 
 setup(
     name='django-clever-selects',
-    version='0.7.5',
+    version='0.7.6',
     description='Chained select box widget for Django framework using AJAX requests.',
     long_description=open('README.rst').read(),
     author='Pragmatic Mates',
     author_email='info@pragmaticmates.com',
     maintainer='Pragmatic Mates',
     maintainer_email='info@pragmaticmates.com',
-    url='https://github.com/PragmaticMates/django-clever-selects',
+    url='https://github.com/artscoop/django-clever-selects',
     packages=[
         'clever_selects',
         'clever_selects.templatetags'

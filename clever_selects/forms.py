@@ -107,8 +107,6 @@ class ChainedChoicesMixin(object):
                     fake_request = HttpRequest()
                     fake_request.META["SERVER_NAME"] = "localhost"
                     fake_request.META["SERVER_PORT"] = '80'
-                    SessionMiddleware().process_request(fake_request)
-                    fake_request.session['extradata'] = getattr(self, 'extradata', None)
 
                     # Add parameters and user if supplied
                     fake_request.method = "GET"
@@ -120,8 +118,10 @@ class ChainedChoicesMixin(object):
                     else:
                         fake_request.user = AnonymousUser()
 
-                    # Get the response
-                    response = url_callable(fake_request)
+                    # These 3 lines won't work with Django 1.10 new middleware style
+                    SessionMiddleware().process_request(fake_request)
+                    fake_request.session['extradata'] = getattr(self, 'extradata', None)
+                    response = SessionMiddleware().process_response(fake_request, url_callable(fake_request))
 
                     # Apply the data (if it's returned)
                     if smart_str(response.content):

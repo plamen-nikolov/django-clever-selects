@@ -88,4 +88,5 @@ class ChainedModelMultipleChoiceField(ModelMultipleChoiceField):
         }
         defaults.update(kwargs)
 
-        super().__init__(queryset=self.queryset, *args, **defaults)
+        super(ChainedModelMultipleChoiceField, self).__init__(queryset=self.queryset, *args, **defaults)
+

@@ -9,7 +9,7 @@ class ChainedSelectMixin(object):
     def __init__(self, parent_field=None, ajax_url=None, *args, **kwargs):
         self.parent_field = parent_field
         self.ajax_url = ajax_url
-        super().__init__(*args, **kwargs)
+        super(ChainedSelectMixin, self).__init__(*args, **kwargs)
 
     class Media:
         js = ['js/clever-selects.js']
@@ -87,4 +87,4 @@ class ChainedSelectMultiple(ChainedSelectMixin, SelectMultiple):
     html_template = '<select multiple="multiple"{}>'
 
     def render_options(self, choices, selected_choices):
-        return super().render_options(choices, selected_choices[0])
+        return super(ChainedSelectMultiple, self).render_options(choices, selected_choices[0])

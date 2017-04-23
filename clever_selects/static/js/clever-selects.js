@@ -21,7 +21,8 @@
                     }
                     valuefield.html(options);
                     valuefield.val(selected_value);  // keep selection on choices refresh
-                    valuefield.trigger('change');
+                    // TODO: Add an option whether to reload childs or not
+                    // valuefield.trigger('change');
                     valuefield.trigger("liszt:updated"); // support for chosen versions < 1.0.0
                     valuefield.trigger("chosen:updated"); // support for chosen versions >= 1.0.0
                 },

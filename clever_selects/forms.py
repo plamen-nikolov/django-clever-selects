@@ -5,6 +5,7 @@ import json
 from django import forms
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.middleware.locale import LocaleMiddleware
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import resolve
 from django.core.validators import EMPTY_VALUES
@@ -12,6 +13,7 @@ from django.db import models
 from django.forms.fields import MultipleChoiceField
 from django.http.request import HttpRequest
 from django.utils.encoding import smart_str, force_text
+from cms.middleware.page import CurrentPageMiddleware
 
 from .form_fields import ChainedChoiceField, ChainedModelChoiceField, ChainedModelMultipleChoiceField
 
@@ -28,6 +30,7 @@ class ChainedChoicesMixin(object):
     chained_model_fields_names = []
 
     def init_chained_choices(self, *args, **kwargs):
+
         self.chained_fields_names = self.get_fields_names_by_type(ChainedChoiceField)
         self.chained_model_fields_names = self.get_fields_names_by_type(ChainedModelChoiceField) + self.get_fields_names_by_type(ChainedModelMultipleChoiceField)
         self.user = kwargs.get('user', self.user)
@@ -89,7 +92,7 @@ class ChainedChoicesMixin(object):
                     field.choices += [('', field.empty_label)]
 
                 # check that parent_value is valid
-                if parent_value or True:
+                if parent_value is not None:
                     parent_value = getattr(parent_value, 'pk', parent_value)
 
                     url = force_text(field.ajax_url)
@@ -119,7 +122,9 @@ class ChainedChoicesMixin(object):
                         fake_request.user = AnonymousUser()
 
                     # These 3 lines won't work with Django 1.10 new middleware style
+                    CurrentPageMiddleware().process_request(fake_request)
                     SessionMiddleware().process_request(fake_request)
+                    LocaleMiddleware().process_request(fake_request)
                     fake_request.session['extradata'] = getattr(self, 'extradata', None)
                     response = SessionMiddleware().process_response(fake_request, url_callable(fake_request))
 

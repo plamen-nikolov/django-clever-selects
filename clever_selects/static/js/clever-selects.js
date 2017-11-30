@@ -8,7 +8,7 @@ function loadChildChoices(parentField, child) {
 
     var request = new Request(
         ajaxUrl + "?field=" + valueField.getAttribute("name") + "&parent_field=" + parentField.getAttribute("name") + "&parent_value=" + parentField.value,
-        {method: "GET", headers: headers}
+        {method: "GET", "credentials": 'include', headers: headers}
     );
 
     fetch(request).then(function(response) {

@@ -201,11 +201,11 @@ class ChainedChoicesForm(forms.Form, ChainedChoicesMixin):
     then the options will be loaded when the form is built.
     """
 
-    def __init__(self, language_code=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         if kwargs.get('user'):
             self.user = kwargs.pop('user')  # To get request.user. Do not use kwargs.pop('user', None) due to potential security hole
         super(ChainedChoicesForm, self).__init__(*args, **kwargs)
-        self.language_code = language_code
+        self.language_code = kwargs.get('language_code', None)
         self.init_chained_choices(*args, **kwargs)
 
     def is_valid(self):

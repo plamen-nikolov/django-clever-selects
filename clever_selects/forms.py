@@ -5,13 +5,14 @@ import json
 from django import forms
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import resolve
 from django.core.validators import EMPTY_VALUES
 from django.db import models
 from django.http.request import HttpRequest
-from django.utils.encoding import smart_str, force_text
+from django.urls import resolve
+from django.utils.encoding import force_text, smart_str
 
-from .form_fields import ChainedChoiceField, ChainedModelChoiceField, ChainedModelMultipleChoiceField
+from .form_fields import (ChainedChoiceField, ChainedModelChoiceField,
+                          ChainedModelMultipleChoiceField)
 
 
 class ChainedChoicesMixin(object):

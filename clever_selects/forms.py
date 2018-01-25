@@ -2,18 +2,18 @@ from __future__ import absolute_import
 
 import json
 
+from cms.middleware.page import CurrentPageMiddleware
 from django import forms
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import resolve
 from django.core.validators import EMPTY_VALUES
 from django.db import models
-from django.forms.fields import MultipleChoiceField
 from django.http.request import HttpRequest
-from django.utils.encoding import smart_str, force_text
+from django.urls import resolve
+from django.utils.encoding import force_text, smart_str
 
-from .form_fields import ChainedChoiceField, ChainedModelChoiceField, ChainedModelMultipleChoiceField
+from .form_fields import (ChainedChoiceField, ChainedModelChoiceField,
+                          ChainedModelMultipleChoiceField)
 
 
 class ChainedChoicesMixin(object):
@@ -83,13 +83,10 @@ class ChainedChoicesMixin(object):
                     if field_value is None:
                         field_value = getattr(self, '%s' % field_name, None)
 
-                field.choices = []
-                # only add null choice on optional single selects
-                if not isinstance(field, MultipleChoiceField) and field.required:
-                    field.choices += [('', field.empty_label)]
+                field.choices = [('', field.empty_label)]
 
                 # check that parent_value is valid
-                if parent_value or True:
+                if parent_value:
                     parent_value = getattr(parent_value, 'pk', parent_value)
 
                     url = force_text(field.ajax_url)
@@ -118,10 +115,9 @@ class ChainedChoicesMixin(object):
                     else:
                         fake_request.user = AnonymousUser()
 
-                    # These 3 lines won't work with Django 1.10 new middleware style
-                    SessionMiddleware().process_request(fake_request)
-                    fake_request.session['extradata'] = getattr(self, 'extradata', None)
-                    response = SessionMiddleware().process_response(fake_request, url_callable(fake_request))
+                    CurrentPageMiddleware().process_request(fake_request)
+                    # Get the response
+                    response = url_callable(fake_request)
 
                     # Apply the data (if it's returned)
                     if smart_str(response.content):
@@ -155,6 +151,8 @@ class ChainedChoicesMixin(object):
         return result
 
     def get_children_field_names(self, parent_name):
+        if parent_name in EMPTY_VALUES:
+            return []
         result = []
         for field_name in self.fields:
             field = self.fields[field_name]
@@ -206,11 +204,11 @@ class ChainedChoicesForm(forms.Form, ChainedChoicesMixin):
     then the options will be loaded when the form is built.
     """
 
-    def __init__(self, language_code=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         if kwargs.get('user'):
             self.user = kwargs.pop('user')  # To get request.user. Do not use kwargs.pop('user', None) due to potential security hole
         super(ChainedChoicesForm, self).__init__(*args, **kwargs)
-        self.language_code = language_code
+        self.language_code = kwargs.get('language_code', None)
         self.init_chained_choices(*args, **kwargs)
 
     def is_valid(self):

@@ -15,7 +15,7 @@
             parentField.setAttribute("chained_ids", "{{ js_chained_id }}");
         }
 
-        parentField.addEventListener("change", function() {
+        $("#{{ js_parent_field_id  }}").on("change", function(){
             loadAllChainedChoices(this);
         });
     });

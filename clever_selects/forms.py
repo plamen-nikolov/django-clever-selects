@@ -96,7 +96,6 @@ class ChainedChoicesMixin(object):
                         'field_value': field_value
                     }
 
-                    CurrentPageMiddleware().process_request(fake_request)
                     # This will get the callable from the url.
                     # All we need to do is pass in a 'request'
                     url_callable = resolve(url).func
@@ -116,6 +115,7 @@ class ChainedChoicesMixin(object):
                     else:
                         fake_request.user = AnonymousUser()
 
+                    CurrentPageMiddleware().process_request(fake_request)
                     # Get the response
                     response = url_callable(fake_request)
 

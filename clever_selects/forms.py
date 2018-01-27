@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import json
+from cms.middleware.page import CurrentPageMiddleware
 
 from django import forms
 from django.contrib.auth.models import AnonymousUser
@@ -95,6 +96,7 @@ class ChainedChoicesMixin(object):
                         'field_value': field_value
                     }
 
+                    CurrentPageMiddleware().process_request(fake_request)
                     # This will get the callable from the url.
                     # All we need to do is pass in a 'request'
                     url_callable = resolve(url).func

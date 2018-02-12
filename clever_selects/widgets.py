@@ -50,7 +50,7 @@ class ChainedSelectMixin(object):
             value = ''
         final_attrs = self.build_attrs(attrs, name=name)
         output = [format_html(self.html_template, flatatt(final_attrs))]
-        options = self.render_options(choices, [value])
+        options = self.render_options([value])
         if options:
             output.append(options)
         output.append(js)
@@ -87,5 +87,5 @@ class ChainedSelect(ChainedSelectMixin, Select):
 class ChainedSelectMultiple(ChainedSelectMixin, SelectMultiple):
     html_template = '<select multiple="multiple"{}>'
 
-    def render_options(self, choices, selected_choices):
-        return super(ChainedSelectMultiple, self).render_options(choices, selected_choices[0])
+    def render_options(self, selected_choices):
+        return super(ChainedSelectMultiple, self).render_options(selected_choices[0])

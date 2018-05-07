@@ -25,7 +25,7 @@ function loadChildChoices(parentField, child) {
         });
 
         valueField.innerHTML = optionsHTML;
-        valueField.dispatchEvent(new Event("change"));
+        // valueField.dispatchEvent(new Event("change"));
         valueField.dispatchEvent(new Event("load"));
         valueField.dispatchEvent(new Event("liszt:updated")); // support for chosen versions < 1.0.0
         valueField.dispatchEvent(new Event("chosen:updated")); // support for chosen versions >= 1.0.0
